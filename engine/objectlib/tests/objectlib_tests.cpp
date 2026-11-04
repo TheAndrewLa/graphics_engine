@@ -30,7 +30,8 @@ template <objects::ObjectType kind, typename P>
 concept CanCreate = requires(P params) { objects::createObject<kind>(std::move(params)); };
 
 template <typename T>
-concept HasBounds = requires(const T& object) { objects::bounds(object); };
+concept HasBounds = requires(const T& object) { objects::bounds(object); } &&
+                    (!std::same_as<decltype(objects::bounds(std::declval<const T&>())), objects::RuntimeBoundsResult>);
 
 static_assert(CanCreate<objects::ObjectType::Sphere3, objects::Sphere3Params>);
 static_assert(!CanCreate<objects::ObjectType::Sphere3, objects::Polyline2Params>);
@@ -225,7 +226,140 @@ void compareFactories(objects::ParamsFor<kind> params, bool isValid = true) {
     }
 }
 
+template <typename T>
+void compareRuntimeBounds(const T& object) {
+    auto typed = objects::bounds(object);
+    auto dynamic = objects::bounds(objects::Geometry{object});
+    CHECK(typed.has_value() == dynamic.has_value());
+    if (!typed) {
+        CHECK(dynamic.error() == typed.error());
+        return;
+    }
+    using Box = typename decltype(typed)::value_type;
+    CHECK(std::holds_alternative<Box>(*dynamic));
+    const auto& actual = std::get<Box>(*dynamic);
+    CHECK(actual.min() == typed->min());
+    CHECK(actual.max() == typed->max());
+}
+
+void runtimeBounds() {
+    static_assert(std::same_as<decltype(objects::bounds(std::declval<const objects::Geometry&>())),
+                               objects::RuntimeBoundsResult>);
+    compareRuntimeBounds(makePoint2(2, 3));
+    compareRuntimeBounds(makePoint3(2, 3, 4));
+    compareRuntimeBounds(take(objects::Segment2::create({makePoint2(3, 4), makePoint2(-1, 8)})));
+    compareRuntimeBounds(take(objects::Segment3::create({makePoint3(3, 4, -2), makePoint3(-1, 8, 5)})));
+    compareRuntimeBounds(take(objects::Triangle2::create({{makePoint2(0, 0), makePoint2(1, 0), makePoint2(0, 1)}})));
+    compareRuntimeBounds(
+        take(objects::Triangle3::create({{makePoint3(0, 0, 0), makePoint3(1, 0, 0), makePoint3(0, 1, 0)}})));
+    compareRuntimeBounds(take(objects::Polyline2::create({{makePoint2(4, 5), makePoint2(-2, 7)}, false})));
+    compareRuntimeBounds(take(objects::Polyline3::create({{makePoint3(4, 5, 6), makePoint3(-2, 7, -8)}, false})));
+    compareRuntimeBounds(take(objects::Aabb2::create({makePoint2(-1, -2), makePoint2(3, 4)})));
+    compareRuntimeBounds(take(objects::Aabb3::create({makePoint3(-1, -2, -3), makePoint3(3, 4, 5)})));
+    compareRuntimeBounds(
+        take(objects::TriangleMesh2::create({{makePoint2(0, 0), makePoint2(1, 0), makePoint2(0, 1)}, {{{0, 1, 2}}}})));
+    compareRuntimeBounds(take(objects::TriangleMesh3::create(
+        {{makePoint3(0, 0, 0), makePoint3(1, 0, 0), makePoint3(0, 1, 0)}, {{{0, 1, 2}}}})));
+    compareRuntimeBounds(take(objects::Polygon2::create({{makePoint2(4, 5), makePoint2(6, 5), makePoint2(4, 8)}})));
+    compareRuntimeBounds(take(objects::Rectangle2::create({{{2, 4}}})));
+    compareRuntimeBounds(take(objects::Circle2::create({2})));
+    compareRuntimeBounds(take(objects::Disk2::create({2})));
+    compareRuntimeBounds(take(objects::Sphere3::create({2})));
+    compareRuntimeBounds(take(objects::Box3::create({{{2, 4, 6}}})));
+
+    geometryError(objects::bounds(objects::Geometry{take(objects::Line2::create({{}, {{1, 0}}}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::bounds(objects::Geometry{take(objects::Line3::create({{}, {{0, 0, 1}}}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::bounds(objects::Geometry{take(objects::Ray2::create({{}, {{1, 0}}}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::bounds(objects::Geometry{take(objects::Ray3::create({{}, {{0, 0, 1}}}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::bounds(objects::Geometry{take(objects::Plane3::create({{{0, 0, 1}}, 0}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::bounds(objects::Geometry{take(objects::TriangleMesh2::create({{}, {}}))}),
+                  objects::GeometryErrorCode::EmptyGeometry);
+
+    objects::Geometry invalidPoint{makePoint2(2, 3)};
+    std::get<objects::Point2>(invalidPoint)[0] = std::numeric_limits<double>::quiet_NaN();
+    geometryError(objects::bounds(invalidPoint), objects::GeometryErrorCode::InvalidGeometry);
+
+    auto isolated = [] {
+        objects::Geometry geometry{take(objects::Polyline2::create({{makePoint2(4, 5), makePoint2(-2, 7)}, false}))};
+        return objects::bounds(geometry);
+    }();
+    const auto& isolatedBox = std::get<objects::Aabb2>(*isolated);
+    CHECK(isolatedBox.min() == makePoint2(-2, 5));
+    CHECK(isolatedBox.max() == makePoint2(4, 7));
+}
+
+template <typename T>
+void compareRuntimeTessellation(const T& object, objects::TessellationOptions options = {}) {
+    auto typed = [&] {
+        if constexpr (std::same_as<T, objects::Circle2>) {
+            return objects::sampleCircle(object, options);
+        } else {
+            return objects::tessellate(object, options);
+        }
+    }();
+    auto dynamic = objects::tessellate(objects::Geometry{object}, options);
+    CHECK(typed.has_value() == dynamic.has_value());
+    if (!typed) {
+        CHECK(dynamic.error() == typed.error());
+        return;
+    }
+    using Result = typename decltype(typed)::value_type;
+    CHECK(std::holds_alternative<Result>(*dynamic));
+    const auto& actual = std::get<Result>(*dynamic);
+    if constexpr (std::same_as<Result, objects::Polyline2>) {
+        CHECK(actual.closed() == typed->closed());
+        CHECK(std::ranges::equal(actual.vertices(), typed->vertices()));
+    } else {
+        CHECK(std::ranges::equal(actual.positions(), typed->positions()));
+        CHECK(std::ranges::equal(actual.triangles(), typed->triangles()));
+    }
+}
+
+void runtimeTessellation() {
+    static_assert(std::same_as<decltype(objects::tessellate(std::declval<const objects::Geometry&>())),
+                               objects::RuntimeTessellationResult>);
+    const objects::TessellationOptions options{.maxDeviation = 0.05, .maxPrimitiveCount = 4096};
+    compareRuntimeTessellation(take(objects::Circle2::create({2})), options);
+    compareRuntimeTessellation(take(objects::Disk2::create({2})), options);
+    compareRuntimeTessellation(take(objects::Rectangle2::create({{{2, 4}}})), options);
+    compareRuntimeTessellation(take(objects::Sphere3::create({2})), options);
+    compareRuntimeTessellation(take(objects::Box3::create({{{2, 4, 6}}})), options);
+
+    geometryError(objects::tessellate(objects::Geometry{take(objects::Circle2::create({2}))}, {.maxDeviation = 0}),
+                  objects::GeometryErrorCode::InvalidOptions);
+    geometryError(objects::tessellate(objects::Geometry{take(objects::Sphere3::create({2}))},
+                                      {.maxDeviation = 0.0001, .maxPrimitiveCount = 8}),
+                  objects::GeometryErrorCode::BudgetExceeded);
+    const auto tiny = take(objects::Rectangle2::create({{{std::numeric_limits<double>::denorm_min(), 1}}}));
+    geometryError(objects::tessellate(objects::Geometry{tiny}), objects::GeometryErrorCode::NumericalFailure);
+    geometryError(objects::tessellate(objects::Geometry{
+                      take(objects::Polygon2::create({{makePoint2(0, 0), makePoint2(1, 0), makePoint2(0, 1)}}))}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+    geometryError(objects::tessellate(objects::Geometry{makePoint2(1, 2)}),
+                  objects::GeometryErrorCode::UnsupportedOperation);
+
+    auto centered = take(objects::tessellate(objects::Geometry{take(objects::Rectangle2::create({{{2, 4}}}))}));
+    const auto& centeredMesh = std::get<objects::TriangleMesh2>(centered);
+    CHECK(centeredMesh.positions()[0] == makePoint2(-1, -2));
+    CHECK(centeredMesh.positions()[2] == makePoint2(1, 2));
+
+    auto isolated = [] {
+        objects::Geometry geometry{take(objects::Disk2::create({2}))};
+        return objects::tessellate(geometry, {.maxDeviation = 0.05, .maxPrimitiveCount = 4096});
+    }();
+    const auto& isolatedMesh = std::get<objects::TriangleMesh2>(*isolated);
+    CHECK(isolatedMesh.positions().front() == makePoint2(0, 0));
+    CHECK(isolatedMesh.positions().size() == isolatedMesh.triangles().size() + 1);
+}
+
 void runtime() {
+    runtimeBounds();
+    runtimeTessellation();
     static_assert(std::variant_size_v<objects::ObjectSpec> == 23);
     static_assert(std::variant_size_v<objects::Geometry> == 23);
     compareFactories<objects::ObjectType::Point2>({{1, 2}});

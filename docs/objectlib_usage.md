@@ -68,17 +68,41 @@ TriangleMesh3Params. Фигуры с радиусом и размерами це
 | Заголовок | Операция | Результат |
 |---|---|---|
 | operations/bounds.h | bounds для конечной геометрии | expected<Aabb<N>, GeometryError> |
+| operations/bounds.h | bounds(Geometry) | expected<variant<Aabb2, Aabb3>, GeometryError> |
 | operations/segments.h | segments(Polyline<N>) | vector<Segment<N>> |
 | operations/triangulate.h | triangulate(Polygon2) | expected<TriangleMesh2, GeometryError> |
 | operations/tessellate.h | sampleCircle(Circle2, options) | expected<Polyline2, GeometryError> |
 | operations/tessellate.h | tessellate(Disk2 / Rectangle2, options) | expected<TriangleMesh2, GeometryError> |
 | operations/tessellate.h | tessellate(Sphere3 / Box3, options) | expected<TriangleMesh3, GeometryError> |
+| operations/tessellate.h | tessellate(Geometry, options) | expected<TessellatedGeometry, GeometryError> |
 
 bounds поддерживает Point, Segment, Triangle, Polyline, Polygon2, TriangleMesh,
 Aabb, Rectangle2, Circle2, Disk2, Sphere3 и Box3. Для Line, Ray и Plane конечных
 bounds без области ограничения нет. Пустая сетка допустима, но bounds возвращает
-EmptyGeometry. У Geometry возможны две размерности: для runtime-варианта потребитель
-при необходимости сам применяет std::visit и определяет тип результата.
+EmptyGeometry.
+
+Для runtime-значения `bounds(const Geometry&)` сам выбирает конкретную операцию.
+Результат `RuntimeBoundsResult` содержит `BoundsGeometry` — `variant<Aabb2, Aabb3>`
+с размерностью исходной геометрии. Неподдерживаемые Line, Ray и Plane дают
+UnsupportedOperation. Изменённый Point с нечестными координатами и Geometry в
+состоянии valueless_by_exception дают InvalidGeometry. Ошибки конкретных операций
+сохраняются, а результат владеет своими данными независимо от исходного Geometry.
+
+`tessellate(const Geometry&, options)` возвращает `RuntimeTessellationResult` с
+`TessellatedGeometry` — `variant<Polyline2, TriangleMesh2, TriangleMesh3>`. Circle2
+делегируется `sampleCircle`, Disk2 / Rectangle2 / Sphere3 / Box3 — соответствующим
+типизированным перегрузкам. Для остальных альтернатив возвращается
+UnsupportedOperation. В частности, Polygon2 триангулируется отдельным вызовом
+`triangulate`, а не runtime-перегрузкой tessellate. Ошибки опций, бюджета и численных
+вычислений передаются без изменения; результат не зависит от времени жизни входа.
+
+Geometry — закрытый каталог геометрических значений, а не гарантия поддержки всех
+операций или отображаемости. Aabb и TriangleMesh могут быть как входными объектами,
+так и результатами вычислений. Фигуры с радиусом и размерами используют локальные
+координаты с центром в начале; геометрия с явными точками сохраняет их координаты.
+Мировое размещение, преобразования и идентичность экземпляров сцены относятся к Core.
+Point остаётся изменяемым unchecked-значением Math: операция, использующая его,
+должна проверять фактические координаты, как это делает bounds.
 
 Замкнутая полилиния даёт дополнительный последний отрезок. Окружность даёт контур,
 диск — заполненную сетку. Триангуляция ear clipping поддерживает вогнутые простые

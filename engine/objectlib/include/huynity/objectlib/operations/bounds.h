@@ -5,11 +5,17 @@
 #include <algorithm>
 #include <array>
 #include <span>
+#include <variant>
 
 namespace huynity::objectlib {
 
 template <std::size_t dimension>
 using BoundsResult = GeometryResult<Aabb<dimension>>;
+
+using BoundsGeometry = std::variant<Aabb2, Aabb3>;
+using RuntimeBoundsResult = GeometryResult<BoundsGeometry>;
+
+[[nodiscard]] RuntimeBoundsResult bounds(const Geometry& geometry);
 
 namespace detail {
 
