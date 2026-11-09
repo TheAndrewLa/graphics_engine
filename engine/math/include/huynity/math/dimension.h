@@ -9,7 +9,7 @@
 namespace huynity::math {
 
 template <std::size_t dimension>
-concept Dimension = dimension == 2 || dimension == 3;
+concept Dimension = dimension == 2 || dimension == 3 || dimension == 4;
 
 namespace detail {
 
@@ -41,9 +41,9 @@ public:
   constexpr friend bool operator==(const DimensionalContainer &,
                                    const DimensionalContainer &) = default;
 
-  constexpr bool finite() const { return true; }
+  [[nodiscard]] constexpr bool finite() const { return true; }
 
-  constexpr bool finite() const
+  [[nodiscard]] constexpr bool finite() const
     requires std::is_floating_point_v<T>
   {
     return std::ranges::all_of(m_components, std::isfinite);
