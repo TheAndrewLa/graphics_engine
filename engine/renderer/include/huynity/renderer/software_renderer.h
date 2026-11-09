@@ -374,10 +374,8 @@ inline void clear(image::ImageBuffer& framebuffer, const render_contracts::Color
     const std::byte g = toByte(color.green);
     const std::byte b = toByte(color.blue);
     const std::byte a = toByte(color.alpha);
-    const std::uint32_t packed = (static_cast<std::uint32_t>(a) << 24) |
-                                 (static_cast<std::uint32_t>(b) << 16) |
-                                 (static_cast<std::uint32_t>(g) << 8) |
-                                  static_cast<std::uint32_t>(r);
+    const std::uint32_t packed = (static_cast<std::uint32_t>(a) << 24) | (static_cast<std::uint32_t>(b) << 16) |
+                                 (static_cast<std::uint32_t>(g) << 8) | static_cast<std::uint32_t>(r);
     for (std::size_t y = 0; y < framebuffer.height(); ++y) {
         auto row = framebuffer.row(y);
         auto* pixels = reinterpret_cast<std::uint32_t*>(row.data());
