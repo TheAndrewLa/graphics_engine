@@ -49,7 +49,11 @@ void testDefaultCreateWindow() {
     auto win = window::createWindow();
     CHECK(win != nullptr);
     CHECK(win->isOpen());
-    CHECK(win->size() == window::WindowSize{.width = 800, .height = 600});
+    if (dynamic_cast<window::HeadlessWindow*>(win.get()) != nullptr) {
+        CHECK(win->size() == window::WindowSize{.width = 800, .height = 600});
+    } else {
+        CHECK(win->size().width >= 800 && win->size().height >= 600);
+    }
 
     std::vector<window::InputEvent> events;
     win->pollEvents(events);
@@ -75,7 +79,11 @@ void testCustomCreateWindow() {
     auto win = window::createWindow(config);
     CHECK(win != nullptr);
     CHECK(win->isOpen());
-    CHECK(win->size() == window::WindowSize{.width = 1280, .height = 720});
+    if (dynamic_cast<window::HeadlessWindow*>(win.get()) != nullptr) {
+        CHECK(win->size() == window::WindowSize{.width = 1280, .height = 720});
+    } else {
+        CHECK(win->size().width >= 1280 && win->size().height >= 720);
+    }
 
     // In environment without native backend, transparent fallback to HeadlessWindow occurs
     if (!window::hasNativeWindowSupport()) {

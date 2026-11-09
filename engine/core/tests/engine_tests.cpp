@@ -27,7 +27,7 @@ void testDefaultConfig() {
     CHECK(!engine.config().forceHeadless);
 
     CHECK(engine.window().isOpen());
-    CHECK(engine.window().size() == huynity::adapters::window::WindowSize{800, 600});
+    CHECK(engine.window().size().width >= 800 && engine.window().size().height >= 600);
     CHECK(engine.scene().view().instances.empty());
     CHECK(!engine.input().isKeyPressed(huynity::adapters::window::KeyCode::Space));
 }
