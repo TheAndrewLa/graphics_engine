@@ -1,0 +1,11 @@
+build/
+build*/
+.cache/
+.git/
+.opencode/
+.kimi-code/
+output/
+Testing/
+*.tmp
+*.log
+*.swp

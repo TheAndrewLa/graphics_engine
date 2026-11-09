@@ -1,0 +1,45 @@
+services:
+  web:
+    build: .
+    image: huynity:latest
+    container_name: huynity-interactive
+    ports:
+      - "6080:6080"
+    environment:
+      - EXAMPLE=game_scene
+      - RESOLUTION=800x600
+    volumes:
+      - ./output:/app/output:z
+    command: web
+
+  test:
+    build: .
+    image: huynity:latest
+    container_name: huynity-test
+    command: test
+
+  hello-cube:
+    build: .
+    image: huynity:latest
+    container_name: huynity-hello-cube
+    ports:
+      - "6081:6080"
+    environment:
+      - EXAMPLE=hello_cube
+      - RESOLUTION=800x600
+    volumes:
+      - ./output:/app/output:z
+    command: web
+
+  gallery:
+    build: .
+    image: huynity:latest
+    container_name: huynity-gallery
+    ports:
+      - "6082:6080"
+    environment:
+      - EXAMPLE=renderer_gallery
+      - RESOLUTION=800x600
+    volumes:
+      - ./output:/app/output:z
+    command: web
