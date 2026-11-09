@@ -89,6 +89,7 @@ Huynity/
   [Render Preparation и кеши](docs/render_preparation.md), [Core API](docs/core_api.md),
   [высокоуровневый Engine API](docs/engine_api.md),
   [оконный адаптер и ввод](docs/window_adapter.md),
+  [запуск в Docker](docs/docker_guide.md),
   [нагрузочные сценарии и baseline](docs/benchmarks.md), [сводный отчёт верификации](docs/verification.md),
   [UML Object Library](docs/objectlib_class_diagram.md),
   [контракт фабрики](docs/objectlib_creation_api.md), [реализованный API](docs/objectlib_usage.md).
