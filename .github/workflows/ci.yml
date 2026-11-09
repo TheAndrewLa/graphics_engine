@@ -7,15 +7,57 @@ permissions:
 
 jobs:
   clang-format:
+    name: Code Formatting (clang-format 20)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: git ls-files -z -- '*.h' '*.cpp' | xargs -0 -r pipx run --spec clang-format==20.1.8 clang-format -style=file --dry-run --Werror
+      - name: Check C++ code formatting
+        run: git ls-files -z -- '*.h' '*.cpp' | xargs -0 -r pipx run --spec clang-format==20.1.8 clang-format -style=file --dry-run --Werror
 
-  build:
+  build-and-test:
+    name: Build & Run Unit Tests (GCC 14)
     runs-on: ubuntu-24.04
     env:
       CXX: g++-14
+      HUYNITY_BUILD_ADAPTERS: "ON"
+      HUYNITY_BUILD_EXAMPLES: "ON"
     steps:
       - uses: actions/checkout@v4
-      - run: ./tools/scripts/build.sh
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build g++-14
+
+      - name: Build project with adapters and examples
+        run: ./tools/scripts/build.sh
+
+      - name: Run CTest test suite
+        run: ctest --test-dir build --output-on-failure --parallel $(nproc)
+
+      - name: Verify examples execution in CI mode
+        run: |
+          ./build/examples/objectlib/huynity_objectlib_example
+          ./build/examples/window_demo/huynity_window_demo
+          ./build/examples/hello_cube/huynity_hello_cube
+          ./build/examples/renderer_gallery/huynity_renderer_gallery
+          ./build/examples/game_scene/huynity_game_scene
+
+  container-check:
+    name: Container Build & Container Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build container image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: huynity:latest
+
+      - name: Run unit & integration tests inside container
+        run: docker run --rm huynity:latest test
