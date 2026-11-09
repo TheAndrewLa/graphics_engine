@@ -21,7 +21,9 @@ ReferenceAlignment: Left
 DerivePointerAlignment: false
 IndentPPDirectives: None
 IncludeBlocks: Regroup
-SortIncludes: CaseSensitive
+SortIncludes:
+    Enabled: true
+    IgnoreCase: false
 IncludeCategories:
   - Regex: '^"huynity/'
     Priority: 1
