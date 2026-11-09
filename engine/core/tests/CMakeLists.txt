@@ -74,3 +74,53 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(huynity_core_finite_tests PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 add_test(NAME core.finite_representation COMMAND huynity_core_finite_tests)
+
+if(TARGET huynity::window)
+    add_executable(huynity_engine_tests engine_tests.cpp)
+    target_link_libraries(huynity_engine_tests PRIVATE
+        huynity::core
+        huynity::runtime
+        huynity::renderer
+        huynity::window
+    )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(huynity_engine_tests PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    add_test(NAME core.engine COMMAND huynity_engine_tests)
+
+    add_executable(huynity_engine_lifecycle_tests engine_lifecycle_tests.cpp)
+    target_link_libraries(huynity_engine_lifecycle_tests PRIVATE
+        huynity::core
+        huynity::runtime
+        huynity::renderer
+        huynity::window
+    )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(huynity_engine_lifecycle_tests PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    add_test(NAME core.engine_lifecycle COMMAND huynity_engine_lifecycle_tests)
+
+    add_executable(huynity_engine_preview_tests engine_preview_tests.cpp)
+    target_link_libraries(huynity_engine_preview_tests PRIVATE
+        huynity::core
+        huynity::runtime
+        huynity::renderer
+        huynity::window
+    )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(huynity_engine_preview_tests PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    add_test(NAME core.engine_preview COMMAND huynity_engine_preview_tests)
+
+    add_executable(huynity_engine_mixed_scene_tests engine_mixed_scene_tests.cpp)
+    target_link_libraries(huynity_engine_mixed_scene_tests PRIVATE
+        huynity::core
+        huynity::runtime
+        huynity::renderer
+        huynity::window
+    )
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(huynity_engine_mixed_scene_tests PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+    add_test(NAME core.engine_mixed_scene COMMAND huynity_engine_mixed_scene_tests)
+endif()
