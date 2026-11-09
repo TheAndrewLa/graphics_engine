@@ -3,8 +3,9 @@
 ## Project Map
 
 Huynity — C++23-проект геометрической библиотеки и движка с программным рендерингом.
-Реализованы Math и базовая Object Library; Core, Renderer, Runtime, адаптеры и редактор
-пока описаны в документации. Их каталоги создаются вместе с реализацией.
+Реализованы Math, базовая Object Library, ImageBuffer, Render Contracts, Core, fixed-step
+Runtime, SoftwareRenderer, адаптер Renderer Actor и сквозные интеграционные тесты; оконный адаптер
+и редактор пока описаны в архитектурных планах.
 
 ```text
 Huynity/
@@ -14,8 +15,9 @@ Huynity/
 ├── CMakeLists.txt                    # проект, C++23, подключение компонентов
 ├── CMakePresets.json                 # Ninja Debug, binaryDir: ${sourceDir}/build
 ├── engine/
-│   ├── math/                         # реализовано: header-only Point/Vector 2D и 3D
-│   │   └── include/huynity/math/
+│   ├── math/                         # реализовано: Point/Vector и Transform 2D/3D
+│   │   ├── include/huynity/math/
+│   │   └── tests/                    # модульные тесты и CTest
 │   ├── objectlib/                    # реализовано: геометрия, фабрики, операции
 │   │   ├── include/huynity/objectlib/
 │   │   │   ├── params/               # типизированные описания геометрии
@@ -26,17 +28,37 @@ Huynity/
 │   │   │   └── detail/               # внутренние шаблонные помощники
 │   │   ├── src/                      # creation, shapes, collections, operations
 │   │   └── tests/                    # модульные тесты и CTest
-│   ├── image/                        # план: framebuffer и формат пикселей
-│   ├── render_contracts/             # план: снимок, задание и результат кадра
-│   ├── core/                         # план: сцена, ObjectId, update, Render Preparation
-│   ├── renderer/                     # план: синхронный программный рендеринг
-│   └── runtime/                      # план: Orchestrator, фазы и жизненный цикл
+│   ├── image/                        # реализовано: move-only ImageBuffer, RGBA8
+│   │   ├── include/huynity/image/
+│   │   └── tests/
+│   ├── render_contracts/             # реализовано: камеры, ресурсы, passes, снимок
+│   │   ├── include/huynity/render_contracts/
+│   │   └── tests/
+│   ├── core/                         # реализовано: Scene, ObjectId, команды, read-only view
+│   │   ├── include/huynity/core/
+│   │   └── tests/
+│   ├── renderer/                     # реализовано: программный рендеринг (3D, 2D, HUD, shading, кеш)
+│   │   ├── include/huynity/renderer/
+│   │   └── tests/
+│   └── runtime/                      # реализовано: fixed-step update, frame pipeline, пул и главный цикл
+│       ├── include/huynity/runtime/
+│       └── tests/
 ├── adapters/
-│   ├── renderer_actor/               # план: сообщения, завершения, исполнение
-│   └── window/                       # план: системные события и показ кадра
+│   ├── renderer_actor/               # реализовано: Renderer Port fake adapter, ownership и lifecycle
+│   │   ├── include/huynity/adapters/renderer_actor/
+│   │   └── tests/
+│   └── window/                       # реализовано: WindowAdapter, SDL3 NativeWindow, HeadlessWindow, InputState
+│       ├── include/huynity/adapters/window/
+│       ├── src/
+│       └── tests/
 ├── apps/editor/                      # план: main и UI
-├── tests/integration/                # план: проверки взаимодействия компонентов
-├── examples/objectlib/               # работающий самостоятельный пример
+├── tests/integration/                # реализовано: 2D/3D сценарии, нагрузочные профили, baseline
+├── examples/
+│   ├── game_scene/                   # изометрическая деревня с мельницей, прудом и управлением камерой
+│   ├── hello_cube/                   # минимальный пример игры на фасаде Engine
+│   ├── objectlib/                    # работающий пример геометрии Object Library
+│   ├── renderer_gallery/             # демонстрация wireframe, shading и текстурирования
+│   └── window_demo/                  # интерактивный пример окна и рендеринга
 ├── tools/scripts/build.sh            # настройка, сборка и ссылка compile_commands.json
 └── docs/                             # архитектура, API, UML; diagrams/ — SVG и DOT
 ```
@@ -44,8 +66,14 @@ Huynity/
 - Публичные заголовки компонента лежат в `include/huynity/<component>/`, обычные
   внутренние заголовки и реализация — в `src/`. Шаблонные помощники, нужные публичным
   заголовкам, допустимы в `include/.../detail/`; соседние компоненты их напрямую не используют.
-- CMake-цели: `huynity_math` / `huynity::math`, `huynity_objectlib` / `huynity::objectlib`,
-  `huynity_objectlib_tests`, `huynity_objectlib_example`. У каждого компонента свой CMakeLists.txt.
+- CMake-цели: `huynity_math` / `huynity::math`, `huynity_image` / `huynity::image`,
+  `huynity_render_contracts` / `huynity::render_contracts`, `huynity_renderer` / `huynity::renderer`,
+  `huynity_core` / `huynity::core` (и алиас `huynity::engine`),
+  `huynity_runtime` / `huynity::runtime`,
+  `huynity_objectlib` / `huynity::objectlib`, `huynity_window` / `huynity::window`,
+  а также `<component>_tests`, `huynity_objectlib_example`, `huynity_window_demo`, `huynity_hello_cube`, `huynity_renderer_gallery` и `huynity_game_scene`. У каждого компонента свой CMakeLists.txt.
+  Image не имеет зависимостей движка; Runtime зависит от Render Contracts и Image;
+  Render Contracts зависит только от Math и STL.
 - Object Library зависит только от Math и STL. Она владеет геометрическими значениями,
   предоставляет синхронные операции и не назначает Scene ObjectId. Сценой владеет Core.
 - Типизированный API — `createObject<ObjectType::...>(TypedParams)`, runtime-вход —
@@ -57,7 +85,12 @@ Huynity/
 - Пространства имён компонентов: `huynity::math`, `huynity::objectlib` и аналогичные;
   для адаптеров — `huynity::adapters::<component>`. Имена файлов — `snake_case.h/.cpp`.
 - Архитектура: [взаимодействие подсистем](docs/subsystem_interaction.md),
-  [ревью](docs/architecture_review.md), [UML Object Library](docs/objectlib_class_diagram.md),
+  [ревью](docs/architecture_review.md), [формат ImageBuffer](docs/image_buffer.md),
+  [Render Preparation и кеши](docs/render_preparation.md), [Core API](docs/core_api.md),
+  [высокоуровневый Engine API](docs/engine_api.md),
+  [оконный адаптер и ввод](docs/window_adapter.md),
+  [нагрузочные сценарии и baseline](docs/benchmarks.md), [сводный отчёт верификации](docs/verification.md),
+  [UML Object Library](docs/objectlib_class_diagram.md),
   [контракт фабрики](docs/objectlib_creation_api.md), [реализованный API](docs/objectlib_usage.md).
 
 ## Определение каталога сборки
@@ -75,11 +108,16 @@ Huynity/
 
 - Нужны компилятор и стандартная библиотека с C++23 и std::expected, CMake 3.20+,
   Ninja и clang-format 20. Object Library и её тесты не требуют внешних библиотек.
+- SDL3 — опциональная зависимость нативного окна. На Fedora установите `SDL3-devel`;
+  без неё `huynity_window` собирается только с HeadlessWindow. При ошибке инициализации
+  видеоокружения фабрика выводит причину и также использует HeadlessWindow.
 - Работай из корня репозитория. Новая конфигурация: `cmake --preset ninja`.
   Для существующей сборки сохрани её preset или параметры.
 - BUILD_TESTING включает тесты CTest; HUYNITY_BUILD_EXAMPLES — пример использования.
-  Обе опции по умолчанию включены. Подключение будущих UI и адаптеров должно быть
-  опциональным и не мешать сборке Math / Object Library.
+  Обе опции по умолчанию включены. HUYNITY_BUILD_ADAPTERS подключает реализованные
+  adapters/renderer_actor и adapters/window и по умолчанию выключена; отсутствующие
+  каталоги пропускаются с диагностикой. Опциональные UI и адаптеры не должны мешать
+  сборке Math / Object Library.
 
 ## Build & test
 
