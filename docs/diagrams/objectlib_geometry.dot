@@ -1,0 +1,75 @@
+digraph UML {
+graph [rankdir=LR, bgcolor="white", nodesep=0.65, ranksep=1.0, pad=0.3, overlap=false];
+node [shape=plain, fontname="DejaVu Sans", fontsize=13];
+edge [fontname="DejaVu Sans", fontsize=10, color="#52657A", fontcolor="#33475B"];
+PointN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«math_value»</FONT><BR/><B>Point&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+coordinates : array&lt;double, N&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+VectorN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«math_value»</FONT><BR/><B>Vector&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+components : array&lt;double, N&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+SegmentN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Segment&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_firstPoint : PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_secondPoint : PointN</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+a() PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+b() PointN</TD></TR></TABLE>>];
+LineN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Line&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_origin : PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_direction : VectorN</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+origin() PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+direction() VectorN</TD></TR></TABLE>>];
+RayN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Ray&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_origin : PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_direction : VectorN</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+origin() PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+direction() VectorN</TD></TR></TABLE>>];
+TriangleN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Triangle&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_vertices : array&lt;Point&lt;N&gt;, 3&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+vertices() read-only point view</TD></TR></TABLE>>];
+PolylineN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Polyline&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_vertices : vector&lt;Point&lt;N&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_isClosed : bool</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+vertices() read-only point view</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+closed() bool</TD></TR></TABLE>>];
+Polygon2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Polygon2</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_contour : vector&lt;Point2&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+contour() read-only point view</TD></TR></TABLE>>];
+Plane3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Plane3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_normal : Vector3</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_offset : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+normal() Vector3</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+offset() double</TD></TR></TABLE>>];
+Rectangle2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Rectangle2</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_size : Vector2</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+size() Vector2</TD></TR></TABLE>>];
+Circle2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Circle2</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_radius : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius() double</TD></TR></TABLE>>];
+Disk2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Disk2</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_radius : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius() double</TD></TR></TABLE>>];
+Sphere3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Sphere3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_radius : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius() double</TD></TR></TABLE>>];
+Box3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Box3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_size : Vector3</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+size() Vector3</TD></TR></TABLE>>];
+AabbN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>Aabb&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_min : PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_max : PointN</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+min() PointN</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+max() PointN</TD></TR></TABLE>>];
+TriangleMeshN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_template»</FONT><BR/><B>TriangleMesh&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_positions : vector&lt;Point&lt;N&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_triangles : vector&lt;TriangleIndices&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+positions() read-only point view</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+triangles() read-only index view</TD></TR></TABLE>>];
+TriangleIndices [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>TriangleIndices</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+indices : array&lt;uint32_t, 3&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+GeometryOperations [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«namespace_functions»</FONT><BR/><B>GeometryOperations</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+bounds(geometry) BoundsResult_N</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+tessellate(surface, options) TessellationResult_N</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+triangulate(Polygon2 polygon) TessellationResult_2</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+sampleCircle(Circle2 circle, options) PolylineResult_2</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+segments(PolylineN polyline) vector&lt;Segment&lt;N&gt;&gt;</TD></TR></TABLE>>];
+TessellationOptions [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>TessellationOptions</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+maxDeviation : double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+maxPrimitiveCount : size_t</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+GeometryError [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>GeometryError</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+code : GeometryErrorCode</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+GeometryErrorCode [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«enumeration»</FONT><BR/><B>GeometryErrorCode</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">InvalidOptions</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">BudgetExceeded</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">NumericalFailure</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">UnsupportedOperation</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+SegmentN -> PointN [label="endpoints", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="2"];
+LineN -> PointN [label="origin", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+LineN -> VectorN [label="direction", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+RayN -> PointN [label="origin", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+RayN -> VectorN [label="direction", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+TriangleN -> PointN [label="vertices", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="3"];
+PolylineN -> PointN [label="vertices", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="2..*"];
+Polygon2 -> PointN [label="contour N2", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="3..*"];
+Plane3 -> VectorN [label="normal N3", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+Rectangle2 -> VectorN [label="size N2", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+Box3 -> VectorN [label="size N3", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="1"];
+AabbN -> PointN [label="corners", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="2"];
+TriangleMeshN -> PointN [label="positions", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="0..*"];
+TriangleMeshN -> TriangleIndices [label="triangles", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="0..*"];
+GeometryOperations -> TriangleMeshN [label="produces mesh", style=dashed, arrowhead=vee];
+GeometryOperations -> AabbN [label="computes bounds", style=dashed, arrowhead=vee];
+GeometryOperations -> PolylineN [label="reads", style=dashed, arrowhead=vee];
+GeometryOperations -> SegmentN [label="produces segments", style=dashed, arrowhead=vee];
+GeometryOperations -> Polygon2 [label="triangulates", style=dashed, arrowhead=vee];
+GeometryOperations -> Sphere3 [label="tessellates", style=dashed, arrowhead=vee];
+GeometryOperations -> Box3 [label="tessellates", style=dashed, arrowhead=vee];
+GeometryOperations -> Circle2 [label="samples outline", style=dashed, arrowhead=vee];
+GeometryOperations -> Disk2 [label="triangulates disk", style=dashed, arrowhead=vee];
+GeometryOperations -> Rectangle2 [label="triangulates rectangle", style=dashed, arrowhead=vee];
+GeometryOperations -> TessellationOptions [label="reads", style=dashed, arrowhead=vee];
+GeometryOperations -> GeometryError [label="operation errors", style=dashed, arrowhead=vee];
+GeometryError -> GeometryErrorCode [label="code value", dir=both, arrowtail=diamond, arrowhead=none];
+}

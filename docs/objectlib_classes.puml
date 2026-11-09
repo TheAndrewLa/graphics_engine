@@ -1,0 +1,303 @@
+@startuml objectlib_creation
+title Object Library: создание объектов
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam classBackgroundColor #F4F8FF
+class "CreationAPI" as CreationAPI <<namespace_functions>> {
+  +createObject_K(ParamsFor_K params) CreateResult_K
+  +createObject(ObjectSpec spec) GeometryCreateResult
+}
+class "ObjectType" as ObjectType <<enumeration>> {
+  Sphere3
+  Polyline2
+  OtherImplementedTypes
+}
+class "ObjectTraits<K>" as ObjectTraits <<template>> {
+  +Params : type alias
+  +Object : type alias
+}
+class "SupportedObject<K>" as SupportedObject <<concept>> {
+  +requires_Params_and_Object
+}
+class "ObjectTraits<Sphere3>" as Sphere3Traits <<specialization>> {
+  +Params : Sphere3Params
+  +Object : Sphere3
+}
+class "ObjectTraits<Polyline2>" as Polyline2Traits <<specialization>> {
+  +Params : Polyline2Params
+  +Object : Polyline2
+}
+class "Sphere3Params" as Sphere3Params <<struct>> {
+  +radius : double
+}
+class "Polyline2Params" as Polyline2Params <<struct>> {
+  +vertices : vector<Point2>
+  +closed : bool
+}
+class "Sphere3" as Sphere3 <<value>> {
+  -m_radius : double
+  -Sphere3(validatedRadius)
+  {static} +create(Sphere3Params params) SphereCreateResult
+  +radius() double
+}
+class "Polyline2" as Polyline2 <<value_alias>> {
+  -m_vertices : vector<Point2>
+  -m_isClosed : bool
+  -Polyline2(validatedParams)
+  {static} +create(Polyline2Params params) PolylineCreateResult
+  +vertices() read-only point view
+  +closed() bool
+}
+class "ObjectSpec" as ObjectSpec <<variant_alias>> {
+  Sphere3Params_or_Polyline2Params_or_other_params
+}
+class "Geometry" as Geometry <<variant_alias>> {
+  Sphere3_or_Polyline2_or_other_values
+}
+class "CreateError" as CreateError <<struct>> {
+  +code : CreateErrorCode
+}
+class "CreateErrorCode" as CreateErrorCode <<enumeration>> {
+  NonFiniteParameter
+  InvalidRadius
+  TooFewVertices
+  OtherTypeSpecificErrors
+}
+CreationAPI ..> ObjectTraits : compile time mapping
+CreationAPI ..> SupportedObject : constrained by
+ObjectTraits ..> ObjectType : template key
+SupportedObject ..> ObjectTraits : checks aliases
+Sphere3Traits ..> ObjectTraits : specializes for Sphere3
+Polyline2Traits ..> ObjectTraits : specializes for Polyline2
+Sphere3Traits ..> Sphere3Params : Params alias
+Sphere3Traits ..> Sphere3 : Object alias
+Polyline2Traits ..> Polyline2Params : Params alias
+Polyline2Traits ..> Polyline2 : Object alias
+CreationAPI ..> Sphere3 : delegates to create
+CreationAPI ..> Polyline2 : delegates to create
+Sphere3 ..> Sphere3Params : validates and consumes
+Polyline2 ..> Polyline2Params : validates and consumes
+CreationAPI ..> ObjectSpec : runtime input
+CreationAPI ..> Geometry : runtime success value
+ObjectSpec ..> Sphere3Params : alternative
+ObjectSpec ..> Polyline2Params : alternative
+Geometry ..> Sphere3 : alternative
+Geometry ..> Polyline2 : alternative
+CreationAPI ..> CreateError : error result
+CreateError *-- CreateErrorCode : code value
+@enduml
+
+@startuml objectlib_geometry
+title Object Library: базовая геометрия
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam classBackgroundColor #F4F8FF
+class "Point<N>" as PointN <<math_value>> {
+  +coordinates : array<double, N>
+}
+class "Vector<N>" as VectorN <<math_value>> {
+  +components : array<double, N>
+}
+class "Segment<N>" as SegmentN <<value_template>> {
+  -m_firstPoint : PointN
+  -m_secondPoint : PointN
+  +a() PointN
+  +b() PointN
+}
+class "Line<N>" as LineN <<value_template>> {
+  -m_origin : PointN
+  -m_direction : VectorN
+  +origin() PointN
+  +direction() VectorN
+}
+class "Ray<N>" as RayN <<value_template>> {
+  -m_origin : PointN
+  -m_direction : VectorN
+  +origin() PointN
+  +direction() VectorN
+}
+class "Triangle<N>" as TriangleN <<value_template>> {
+  -m_vertices : array<Point<N>, 3>
+  +vertices() read-only point view
+}
+class "Polyline<N>" as PolylineN <<value_template>> {
+  -m_vertices : vector<Point<N>>
+  -m_isClosed : bool
+  +vertices() read-only point view
+  +closed() bool
+}
+class "Polygon2" as Polygon2 <<value>> {
+  -m_contour : vector<Point2>
+  +contour() read-only point view
+}
+class "Plane3" as Plane3 <<value>> {
+  -m_normal : Vector3
+  -m_offset : double
+  +normal() Vector3
+  +offset() double
+}
+class "Rectangle2" as Rectangle2 <<value>> {
+  -m_size : Vector2
+  +size() Vector2
+}
+class "Circle2" as Circle2 <<value>> {
+  -m_radius : double
+  +radius() double
+}
+class "Disk2" as Disk2 <<value>> {
+  -m_radius : double
+  +radius() double
+}
+class "Sphere3" as Sphere3 <<value>> {
+  -m_radius : double
+  +radius() double
+}
+class "Box3" as Box3 <<value>> {
+  -m_size : Vector3
+  +size() Vector3
+}
+class "Aabb<N>" as AabbN <<value_template>> {
+  -m_min : PointN
+  -m_max : PointN
+  +min() PointN
+  +max() PointN
+}
+class "TriangleMesh<N>" as TriangleMeshN <<value_template>> {
+  -m_positions : vector<Point<N>>
+  -m_triangles : vector<TriangleIndices>
+  +positions() read-only point view
+  +triangles() read-only index view
+}
+class "TriangleIndices" as TriangleIndices <<struct>> {
+  +indices : array<uint32_t, 3>
+}
+class "GeometryOperations" as GeometryOperations <<namespace_functions>> {
+  +bounds(geometry) BoundsResult_N
+  +tessellate(surface, options) TessellationResult_N
+  +triangulate(Polygon2 polygon) TessellationResult_2
+  +sampleCircle(Circle2 circle, options) PolylineResult_2
+  +segments(PolylineN polyline) vector<Segment<N>>
+}
+class "TessellationOptions" as TessellationOptions <<struct>> {
+  +maxDeviation : double
+  +maxPrimitiveCount : size_t
+}
+class "GeometryError" as GeometryError <<struct>> {
+  +code : GeometryErrorCode
+}
+class "GeometryErrorCode" as GeometryErrorCode <<enumeration>> {
+  InvalidOptions
+  BudgetExceeded
+  NumericalFailure
+  UnsupportedOperation
+}
+SegmentN "1" *-- "2" PointN : endpoints
+LineN "1" *-- "1" PointN : origin
+LineN "1" *-- "1" VectorN : direction
+RayN "1" *-- "1" PointN : origin
+RayN "1" *-- "1" VectorN : direction
+TriangleN "1" *-- "3" PointN : vertices
+PolylineN "1" *-- "2..*" PointN : vertices
+Polygon2 "1" *-- "3..*" PointN : contour N2
+Plane3 "1" *-- "1" VectorN : normal N3
+Rectangle2 "1" *-- "1" VectorN : size N2
+Box3 "1" *-- "1" VectorN : size N3
+AabbN "1" *-- "2" PointN : corners
+TriangleMeshN "1" *-- "0..*" PointN : positions
+TriangleMeshN "1" *-- "0..*" TriangleIndices : triangles
+GeometryOperations ..> TriangleMeshN : produces mesh
+GeometryOperations ..> AabbN : computes bounds
+GeometryOperations ..> PolylineN : reads
+GeometryOperations ..> SegmentN : produces segments
+GeometryOperations ..> Polygon2 : triangulates
+GeometryOperations ..> Sphere3 : tessellates
+GeometryOperations ..> Box3 : tessellates
+GeometryOperations ..> Circle2 : samples outline
+GeometryOperations ..> Disk2 : triangulates disk
+GeometryOperations ..> Rectangle2 : triangulates rectangle
+GeometryOperations ..> TessellationOptions : reads
+GeometryOperations ..> GeometryError : operation errors
+GeometryError *-- GeometryErrorCode : code value
+@enduml
+
+@startuml objectlib_extensions
+title Object Library: последующие расширения
+hide empty members
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam classBackgroundColor #F4F8FF
+class "CurveContract" as CurveContract <<concept_proposal>> {
+  +domain() ParameterInterval
+  +evaluate(t) PointEvaluationResult_N
+}
+class "SurfaceContract" as SurfaceContract <<concept_proposal>> {
+  +domain() ParameterDomain2
+  +evaluate(u, v) PointEvaluationResult_3
+}
+class "BSplineCurve<N>" as BSplineCurveN <<planned_value_template>> {
+  -m_degree : unsigned
+  -m_knots : vector<double>
+  -m_controlPoints : vector<Point<N>>
+  +domain() ParameterInterval
+  +evaluate(t) PointEvaluationResult_N
+}
+class "NurbsCurve<N>" as NurbsCurveN <<planned_value_template>> {
+  -m_degree : unsigned
+  -m_knots : vector<double>
+  -m_controlPoints : vector<Point<N>>
+  -m_weights : vector<double>
+  +domain() ParameterInterval
+  +evaluate(t) PointEvaluationResult_N
+}
+class "NurbsSurface3" as NurbsSurface3 <<planned_value>> {
+  -m_degreeU : unsigned
+  -m_degreeV : unsigned
+  -m_knotsU : vector<double>
+  -m_knotsV : vector<double>
+  -m_controlPoints : vector<Point3>
+  -m_weights : vector<double>
+  -m_uCount : size_t
+  -m_vCount : size_t
+  +domain() ParameterDomain2
+  +evaluate(u, v) PointEvaluationResult_3
+}
+class "Cylinder3" as Cylinder3 <<planned_value>> {
+  -m_radius : double
+  -m_height : double
+  +radius() double
+  +height() double
+}
+class "Cone3" as Cone3 <<planned_value>> {
+  -m_baseRadius : double
+  -m_height : double
+  +baseRadius() double
+  +height() double
+}
+class "Torus3" as Torus3 <<planned_value>> {
+  -m_majorRadius : double
+  -m_minorRadius : double
+  +majorRadius() double
+  +minorRadius() double
+}
+class "Point<N>" as PointN <<math_value>> {
+  +coordinates : array<double, N>
+}
+class "GeometryOperations" as GeometryOperations <<namespace_functions>> {
+  +sampleCurve(curve, options) PolylineResult_N
+  +tessellate(surface, options) TessellationResult_3
+}
+BSplineCurveN ..> CurveContract : models
+NurbsCurveN ..> CurveContract : models
+NurbsSurface3 ..> SurfaceContract : models
+BSplineCurveN "1" *-- "2..*" PointN : control points
+NurbsCurveN "1" *-- "2..*" PointN : control points
+NurbsSurface3 "1" *-- "4..*" PointN : control grid N3
+GeometryOperations ..> BSplineCurveN : samples
+GeometryOperations ..> NurbsCurveN : samples
+GeometryOperations ..> NurbsSurface3 : tessellates
+GeometryOperations ..> Cylinder3 : tessellates
+GeometryOperations ..> Cone3 : tessellates
+GeometryOperations ..> Torus3 : tessellates
+@enduml

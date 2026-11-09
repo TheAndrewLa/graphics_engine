@@ -1,0 +1,57 @@
+digraph UML {
+graph [rankdir=TB, bgcolor="white", nodesep=0.65, ranksep=1.0, pad=0.3, overlap=false];
+node [shape=plain, fontname="DejaVu Sans", fontsize=13];
+edge [fontname="DejaVu Sans", fontsize=10, color="#52657A", fontcolor="#33475B"];
+CreationAPI [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«namespace_functions»</FONT><BR/><B>CreationAPI</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+createObject_K(ParamsFor_K params) CreateResult_K</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+createObject(ObjectSpec spec) GeometryCreateResult</TD></TR></TABLE>>];
+ObjectType [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«enumeration»</FONT><BR/><B>ObjectType</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Sphere3</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">Polyline2</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">OtherImplementedTypes</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+ObjectTraits [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«template»</FONT><BR/><B>ObjectTraits&lt;K&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+Params : type alias</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+Object : type alias</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+SupportedObject [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«concept»</FONT><BR/><B>SupportedObject&lt;K&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+requires_Params_and_Object</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Sphere3Traits [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«specialization»</FONT><BR/><B>ObjectTraits&lt;Sphere3&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+Params : Sphere3Params</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+Object : Sphere3</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Polyline2Traits [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«specialization»</FONT><BR/><B>ObjectTraits&lt;Polyline2&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+Params : Polyline2Params</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+Object : Polyline2</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Sphere3Params [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>Sphere3Params</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius : double</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Polyline2Params [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>Polyline2Params</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+vertices : vector&lt;Point2&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+closed : bool</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Sphere3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value»</FONT><BR/><B>Sphere3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_radius : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-Sphere3(validatedRadius)</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT"><U>+create(Sphere3Params params) SphereCreateResult</U></TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius() double</TD></TR></TABLE>>];
+Polyline2 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«value_alias»</FONT><BR/><B>Polyline2</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_vertices : vector&lt;Point2&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_isClosed : bool</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-Polyline2(validatedParams)</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT"><U>+create(Polyline2Params params) PolylineCreateResult</U></TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+vertices() read-only point view</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+closed() bool</TD></TR></TABLE>>];
+ObjectSpec [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«variant_alias»</FONT><BR/><B>ObjectSpec</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Sphere3Params_or_Polyline2Params_or_other_params</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Geometry [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«variant_alias»</FONT><BR/><B>Geometry</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Sphere3_or_Polyline2_or_other_values</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+CreateError [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«struct»</FONT><BR/><B>CreateError</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+code : CreateErrorCode</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+CreateErrorCode [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«enumeration»</FONT><BR/><B>CreateErrorCode</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">NonFiniteParameter</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">InvalidRadius</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">TooFewVertices</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">OtherTypeSpecificErrors</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+CreationAPI -> ObjectTraits [label="compile time mapping", style=dashed, arrowhead=vee];
+CreationAPI -> SupportedObject [label="constrained by", style=dashed, arrowhead=vee];
+ObjectTraits -> ObjectType [label="template key", style=dashed, arrowhead=vee];
+SupportedObject -> ObjectTraits [label="checks aliases", style=dashed, arrowhead=vee];
+Sphere3Traits -> ObjectTraits [label="specializes for Sphere3", style=dashed, arrowhead=vee];
+Polyline2Traits -> ObjectTraits [label="specializes for Polyline2", style=dashed, arrowhead=vee];
+Sphere3Traits -> Sphere3Params [label="Params alias", style=dashed, arrowhead=vee];
+Sphere3Traits -> Sphere3 [label="Object alias", style=dashed, arrowhead=vee];
+Polyline2Traits -> Polyline2Params [label="Params alias", style=dashed, arrowhead=vee];
+Polyline2Traits -> Polyline2 [label="Object alias", style=dashed, arrowhead=vee];
+CreationAPI -> Sphere3 [label="delegates to create", style=dashed, arrowhead=vee];
+CreationAPI -> Polyline2 [label="delegates to create", style=dashed, arrowhead=vee];
+Sphere3 -> Sphere3Params [label="validates and consumes", style=dashed, arrowhead=vee];
+Polyline2 -> Polyline2Params [label="validates and consumes", style=dashed, arrowhead=vee];
+CreationAPI -> ObjectSpec [label="runtime input", style=dashed, arrowhead=vee];
+CreationAPI -> Geometry [label="runtime success value", style=dashed, arrowhead=vee];
+ObjectSpec -> Sphere3Params [label="alternative", style=dashed, arrowhead=vee];
+ObjectSpec -> Polyline2Params [label="alternative", style=dashed, arrowhead=vee];
+Geometry -> Sphere3 [label="alternative", style=dashed, arrowhead=vee];
+Geometry -> Polyline2 [label="alternative", style=dashed, arrowhead=vee];
+CreationAPI -> CreateError [label="error result", style=dashed, arrowhead=vee];
+CreateError -> CreateErrorCode [label="code value", dir=both, arrowtail=diamond, arrowhead=none];
+}

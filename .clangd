@@ -1,0 +1,9 @@
+CompileFlags:
+  CompilationDatabase: build
+  Add:
+    - -std=c++23
+    - -Iengine/math/include
+    - -Iengine/objectlib/include
+    - -Wall
+    - -Wextra
+    - -Wpedantic

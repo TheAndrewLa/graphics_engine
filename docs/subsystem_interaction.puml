@@ -1,0 +1,133 @@
+@startuml
+title Huynity — создание объекта и асинхронное построение кадра
+hide footbox
+autonumber
+skinparam sequenceMessageAlign center
+
+box "Главный поток" #EEF4FF
+participant "UI / Editor" as UI
+participant "Orchestrator / Runtime" as O
+participant "Core\nвключая Render Preparation" as C
+participant "Object Library\nобычный C++ API" as L
+participant "Renderer Port\ntrySubmit + CompletionChannel" as P
+participant "Window / Presentation" as W
+end box
+box "Рабочий исполнитель" #F0FFF0
+participant "Renderer actor" as R
+end box
+
+UI -> O : C++: submit(CreateObject, requestId)
+activate O
+O --> UI : SubmitResult: Accepted / Rejected
+deactivate O
+
+group Фазы главного цикла до отправки кадра
+O -> W : C++: pollEvents()
+W --> O : input / resize / close
+O -> O : обработать resize; обновить surfaceGeneration\nи размер пула framebuffer; при close перейти в Stopping
+opt Running и есть принятая команда
+O -> C : C++: apply(CreateObject)
+activate C
+C -> L : C++: создать геометрический объект
+L --> C : объект / ошибка
+C -> C : при успехе сохранить экземпляр и назначить ID
+C --> O : CommandResult(requestId, objectId / error)
+deactivate C
+O -> O : сохранить результат для UI
+end
+UI -> O : C++: takeResults()
+O --> UI : список CommandResult
+loop Running и накоплен шаг h; не более N обновлений
+O -> C : C++: update(h)
+C --> O : завершено
+end
+end
+
+opt Running, prepared-слот пуст и ненулевой размер окна
+O -> C : C++: prepareFrame(FrameSpec)
+activate C
+C -> L : C++: операции подготовки геометрии
+L --> C : примитивы / ошибка
+C --> O : RenderSnapshot / PrepareError
+deactivate C
+alt Ошибка подготовки
+O -> O : сохранить ошибку; prepared-слот остаётся пустым
+else Снимок подготовлен
+O -> O : storePrepared: снимок и framebuffer из пула\nв единственный prepared-слот
+end
+end
+
+opt Renderer свободен и prepared-снимок актуального поколения
+O -> P : C++: trySubmit(RenderFrame(frameId, snapshot, framebuffer))
+activate P
+alt Транспорт принимает задание
+P ->> R : async mailbox: RenderFrame\nпередача владения снимком и framebuffer
+P --> O : Accepted
+O -> O : FrameTracker: активный frameId;\nпоколение поверхности зафиксировано
+else Транспорт закрыт или не готов
+P --> O : Rejected\nвладение остаётся у вызывающего
+O -> O : снимок остаётся в prepared-слоте
+end
+deactivate P
+end
+
+opt Задание было принято
+par Главный поток не ждёт Renderer
+O -> W : C++: pollEvents()
+W --> O : input / resize / close
+O -> O : обновить generation / состояние остановки
+opt Running и prepared-слот пуст
+O -> C : C++: команды, update(h), prepareFrame
+C --> O : результаты и RenderSnapshot prepared-слота
+end
+else Рабочий исполнитель
+R -> R : rasterize(snapshot) в принадлежащий заданию framebuffer
+alt Успех
+R ->> P : CompletionChannel: FrameReady(frameId, frame с framebuffer)
+else Ошибка задания
+R ->> P : CompletionChannel: FrameFailed(frameId, frame с framebuffer, error)
+end
+end
+
+O -> P : C++: CompletionChannel::take()
+P --> O : Empty / FrameReady / FrameFailed; отдельный флаг RendererDown
+alt Нет завершения
+O -> O : активный кадр сохраняется; следующий проход цикла
+else RendererDown
+O -> O : состояние Failed; запретить новые кадры\nдождаться подтверждения окончания исполнения через адаптер
+else frameId не совпадает с активным
+O -> O : отклонить завершение; не менять текущий слот
+else FrameFailed текущего задания
+O -> O : очистить активный слот; сохранить ошибку;\nframebuffer возвращается в пул без показа
+else FrameReady текущего задания
+O -> O : очистить активный слот
+alt Running и generation совпадает
+O -> W : C++: PresentationPort::present(buffer)
+alt Синхронный показ
+W --> O : возврат buffer; использование завершено
+O -> O : вернуть buffer в пул framebuffer
+else Асинхронный показ
+W --> O : nullptr; buffer удерживается Presentation
+note over O,W : возврат в пул отдельным releaseFromPresentation(buffer)
+end
+else Stopping или старое поколение поверхности
+O -> O : buffer не показывается; возврат в пул\nили уничтожение как буфера прежнего размера
+end
+end
+end
+
+note over O,R
+Глубина конвейера 1+1: один активный кадр и не более одного prepared-снимка.
+RendererDown публикуется монитором исполнения через порт, а не умирающим актором.
+Публикация завершения не вызывает UI или Core из рабочего потока.
+end note
+
+legend bottom
+  -> синхронный C++ вызов
+  --> возврат из вызова
+  ->> асинхронная отправка через транспорт
+  Object Library не имеет собственного потока и почтового ящика.
+  Framebuffer — данные; владение передаётся с RenderFrame, возвращается
+  с FrameReady / FrameFailed и после показа попадает в пул Runtime.
+endlegend
+@enduml

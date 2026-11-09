@@ -1,0 +1,2 @@
+add_executable(huynity_objectlib_example main.cpp)
+target_link_libraries(huynity_objectlib_example PRIVATE huynity::objectlib)

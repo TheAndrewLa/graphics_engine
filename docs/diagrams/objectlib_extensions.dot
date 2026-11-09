@@ -1,0 +1,51 @@
+digraph UML {
+graph [rankdir=TB, bgcolor="white", nodesep=0.65, ranksep=1.0, pad=0.3, overlap=false];
+node [shape=plain, fontname="DejaVu Sans", fontsize=13];
+edge [fontname="DejaVu Sans", fontsize=10, color="#52657A", fontcolor="#33475B"];
+CurveContract [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«concept_proposal»</FONT><BR/><B>CurveContract</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+domain() ParameterInterval</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+evaluate(t) PointEvaluationResult_N</TD></TR></TABLE>>];
+SurfaceContract [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«concept_proposal»</FONT><BR/><B>SurfaceContract</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+domain() ParameterDomain2</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+evaluate(u, v) PointEvaluationResult_3</TD></TR></TABLE>>];
+BSplineCurveN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value_template»</FONT><BR/><B>BSplineCurve&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_degree : unsigned</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_knots : vector&lt;double&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_controlPoints : vector&lt;Point&lt;N&gt;&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+domain() ParameterInterval</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+evaluate(t) PointEvaluationResult_N</TD></TR></TABLE>>];
+NurbsCurveN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value_template»</FONT><BR/><B>NurbsCurve&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_degree : unsigned</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_knots : vector&lt;double&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_controlPoints : vector&lt;Point&lt;N&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_weights : vector&lt;double&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+domain() ParameterInterval</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+evaluate(t) PointEvaluationResult_N</TD></TR></TABLE>>];
+NurbsSurface3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value»</FONT><BR/><B>NurbsSurface3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_degreeU : unsigned</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_degreeV : unsigned</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_knotsU : vector&lt;double&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_knotsV : vector&lt;double&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_controlPoints : vector&lt;Point3&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_weights : vector&lt;double&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_uCount : size_t</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_vCount : size_t</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+domain() ParameterDomain2</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+evaluate(u, v) PointEvaluationResult_3</TD></TR></TABLE>>];
+Cylinder3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value»</FONT><BR/><B>Cylinder3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_radius : double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_height : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+radius() double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+height() double</TD></TR></TABLE>>];
+Cone3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value»</FONT><BR/><B>Cone3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_baseRadius : double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_height : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+baseRadius() double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+height() double</TD></TR></TABLE>>];
+Torus3 [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«planned_value»</FONT><BR/><B>Torus3</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_majorRadius : double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">-m_minorRadius : double</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+majorRadius() double</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+minorRadius() double</TD></TR></TABLE>>];
+PointN [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«math_value»</FONT><BR/><B>Point&lt;N&gt;</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+coordinates : array&lt;double, N&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+GeometryOperations [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" COLOR="#52657A"><TR><TD BGCOLOR="#E6EEF9"><FONT POINT-SIZE="11">«namespace_functions»</FONT><BR/><B>GeometryOperations</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+sampleCurve(curve, options) PolylineResult_N</TD></TR>
+<TR><TD ALIGN="LEFT" BALIGN="LEFT">+tessellate(surface, options) TessellationResult_3</TD></TR></TABLE>>];
+BSplineCurveN -> CurveContract [label="models", style=dashed, arrowhead=vee];
+NurbsCurveN -> CurveContract [label="models", style=dashed, arrowhead=vee];
+NurbsSurface3 -> SurfaceContract [label="models", style=dashed, arrowhead=vee];
+BSplineCurveN -> PointN [label="control points", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="2..*"];
+NurbsCurveN -> PointN [label="control points", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="2..*"];
+NurbsSurface3 -> PointN [label="control grid N3", dir=both, arrowtail=diamond, arrowhead=none, taillabel="1", headlabel="4..*"];
+GeometryOperations -> BSplineCurveN [label="samples", style=dashed, arrowhead=vee];
+GeometryOperations -> NurbsCurveN [label="samples", style=dashed, arrowhead=vee];
+GeometryOperations -> NurbsSurface3 [label="tessellates", style=dashed, arrowhead=vee];
+GeometryOperations -> Cylinder3 [label="tessellates", style=dashed, arrowhead=vee];
+GeometryOperations -> Cone3 [label="tessellates", style=dashed, arrowhead=vee];
+GeometryOperations -> Torus3 [label="tessellates", style=dashed, arrowhead=vee];
+}

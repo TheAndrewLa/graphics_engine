@@ -1,0 +1,6 @@
+add_executable(huynity_image_tests image_tests.cpp)
+target_link_libraries(huynity_image_tests PRIVATE huynity::image)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(huynity_image_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME image.buffer COMMAND huynity_image_tests)

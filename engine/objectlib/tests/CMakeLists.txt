@@ -1,0 +1,8 @@
+add_executable(huynity_objectlib_tests objectlib_tests.cpp)
+target_link_libraries(huynity_objectlib_tests PRIVATE huynity::objectlib)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(huynity_objectlib_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+foreach(group creation primitives collections runtime bounds triangulation tessellation numerics)
+    add_test(NAME objectlib.${group} COMMAND huynity_objectlib_tests ${group})
+endforeach()

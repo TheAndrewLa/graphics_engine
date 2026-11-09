@@ -1,0 +1,21 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: git ls-files -z -- '*.h' '*.cpp' | xargs -0 -r pipx run --spec clang-format==20.1.8 clang-format -style=file --dry-run --Werror
+
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      CXX: g++-14
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./tools/scripts/build.sh
