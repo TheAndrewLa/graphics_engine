@@ -1,0 +1,6 @@
+add_executable(huynity_render_contracts_tests render_contracts_tests.cpp)
+target_link_libraries(huynity_render_contracts_tests PRIVATE huynity::render_contracts)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(huynity_render_contracts_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME render_contracts.api COMMAND huynity_render_contracts_tests)

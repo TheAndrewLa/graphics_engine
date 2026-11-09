@@ -1,0 +1,6 @@
+add_executable(huynity_math_tests math_tests.cpp)
+target_link_libraries(huynity_math_tests PRIVATE huynity::math)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(huynity_math_tests PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME math.transforms COMMAND huynity_math_tests)
