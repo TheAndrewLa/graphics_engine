@@ -2,9 +2,9 @@
 
 #include "huynity/math/point.h"
 #include "huynity/math/validation.h"
+#include "huynity/math/vector_unsigned.h"
 #include "huynity/objectlib/errors.h"
 #include "huynity/objectlib/objects.h"
-#include "huynity/objectlib/primitives/triangle_indices.h"
 
 #include <cmath>
 #include <span>
@@ -18,7 +18,7 @@ class TriangleMesh {
 public:
     struct Params {
         std::vector<math::Point<dimension>> positions;
-        std::vector<TriangleIndices> triangles;
+        std::vector<math::VectorUnsigned3> triangles;
     };
 
     static constexpr auto Dimension = dimension;
@@ -30,12 +30,12 @@ public:
     }
 
     [[nodiscard]] static CreateResult<TriangleMesh> create(std::vector<math::Point<dimension>>&& positions,
-                                                           std::vector<TriangleIndices>&& triangles) {
+                                                           std::vector<math::VectorUnsigned3>&& triangles) {
         if (!math::finitePoints<dimension>(positions)) {
             return std::unexpected(CreateError{CreateErrorCode::NonFiniteParameter});
         }
         for (const auto& triangle : triangles) {
-            for (auto index : triangle.indices) {
+            for (auto index : triangle) {
                 if (index >= positions.size()) {
                     return std::unexpected(CreateError{CreateErrorCode::InvalidIndex});
                 }
@@ -45,14 +45,14 @@ public:
     }
 
     [[nodiscard]] std::span<const math::Point<dimension>> positions() const noexcept { return m_positions; }
-    [[nodiscard]] std::span<const TriangleIndices> triangles() const noexcept { return m_triangles; }
+    [[nodiscard]] std::span<const math::VectorUnsigned3> triangles() const noexcept { return m_triangles; }
 
 private:
-    TriangleMesh(std::vector<math::Point<dimension>> positions, std::vector<TriangleIndices> triangles)
+    TriangleMesh(std::vector<math::Point<dimension>> positions, std::vector<math::VectorUnsigned3> triangles)
         : m_positions{std::move(positions)}, m_triangles{std::move(triangles)} {}
 
     std::vector<math::Point<dimension>> m_positions;
-    std::vector<TriangleIndices> m_triangles;
+    std::vector<math::VectorUnsigned3> m_triangles;
 };
 
 using TriangleMesh2 = TriangleMesh<2>;
