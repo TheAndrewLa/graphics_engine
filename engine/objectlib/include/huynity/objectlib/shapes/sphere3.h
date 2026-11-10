@@ -1,16 +1,23 @@
 #pragma once
 
 #include "huynity/objectlib/errors.h"
-#include "huynity/objectlib/params/sphere3_params.h"
-
-#include <span>
-#include <utility>
+#include "huynity/objectlib/object_type.h"
 
 namespace huynity::objectlib {
 
 class Sphere3 {
 public:
-    [[nodiscard]] static CreateResult<Sphere3> create(Sphere3Params params);
+    struct Params {
+        double radius;
+    };
+
+    static constexpr auto Dimension = 3;
+
+    static constexpr auto Type = ObjectType::Sphere;
+
+    [[nodiscard]] static CreateResult<Sphere3> create(Params params);
+    [[nodiscard]] static CreateResult<Sphere3> create(double radius);
+
     [[nodiscard]] double radius() const noexcept { return m_radius; }
 
 private:
