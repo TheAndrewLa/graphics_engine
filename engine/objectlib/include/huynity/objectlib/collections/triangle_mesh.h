@@ -1,12 +1,14 @@
 #pragma once
 
-#include "huynity/objectlib/detail/validation.h"
+#include "huynity/math/point.h"
+#include "huynity/math/validation.h"
 #include "huynity/objectlib/errors.h"
-#include "huynity/objectlib/params/triangle_mesh_params.h"
+#include "huynity/objectlib/objects.h"
+#include "huynity/objectlib/primitives/triangle_indices.h"
 
 #include <cmath>
 #include <span>
-#include <utility>
+#include <vector>
 
 namespace huynity::objectlib {
 
@@ -14,26 +16,42 @@ template <std::size_t dimension>
     requires math::Dimension<dimension>
 class TriangleMesh {
 public:
-    [[nodiscard]] static CreateResult<TriangleMesh> create(TriangleMeshParams<dimension> params) {
-        if (!detail::finitePoints<dimension>(params.positions)) {
+    struct Params {
+        std::vector<math::Point<dimension>> positions;
+        std::vector<TriangleIndices> triangles;
+    };
+
+    static constexpr auto Dimension = dimension;
+
+    static constexpr auto Type = ObjectType::TriangleMesh;
+
+    [[nodiscard]] static CreateResult<TriangleMesh> create(Params params) {
+        return create(std::move(params.positions), std::move(params.triangles));
+    }
+
+    [[nodiscard]] static CreateResult<TriangleMesh> create(std::vector<math::Point<dimension>>&& positions,
+                                                           std::vector<TriangleIndices>&& triangles) {
+        if (!math::finitePoints<dimension>(positions)) {
             return std::unexpected(CreateError{CreateErrorCode::NonFiniteParameter});
         }
-        for (const auto& triangle : params.triangles) {
+        for (const auto& triangle : triangles) {
             for (auto index : triangle.indices) {
-                if (index >= params.positions.size()) {
+                if (index >= positions.size()) {
                     return std::unexpected(CreateError{CreateErrorCode::InvalidIndex});
                 }
             }
         }
-        return TriangleMesh(std::move(params.positions), std::move(params.triangles));
+        return TriangleMesh(std::move(positions), std::move(triangles));
     }
-    [[nodiscard]] std::span<const Point<dimension>> positions() const noexcept { return m_positions; }
+
+    [[nodiscard]] std::span<const math::Point<dimension>> positions() const noexcept { return m_positions; }
     [[nodiscard]] std::span<const TriangleIndices> triangles() const noexcept { return m_triangles; }
 
 private:
-    TriangleMesh(std::vector<Point<dimension>> positions, std::vector<TriangleIndices> triangles)
+    TriangleMesh(std::vector<math::Point<dimension>> positions, std::vector<TriangleIndices> triangles)
         : m_positions{std::move(positions)}, m_triangles{std::move(triangles)} {}
-    std::vector<Point<dimension>> m_positions;
+
+    std::vector<math::Point<dimension>> m_positions;
     std::vector<TriangleIndices> m_triangles;
 };
 
