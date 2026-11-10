@@ -11,6 +11,7 @@ template <std::size_t dimension>
 class Point {
 public:
     struct Params {
+        using Object = Point<dimension>;
         math::Point<dimension> coords;
     };
 

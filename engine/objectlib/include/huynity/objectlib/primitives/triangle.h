@@ -13,6 +13,7 @@ template <std::size_t dimension>
 class Triangle {
 public:
     struct Params {
+        using Object = Triangle<dimension>;
         math::Point<dimension> a;
         math::Point<dimension> b;
         math::Point<dimension> c;

@@ -12,6 +12,7 @@ namespace huynity::objectlib {
 class Polygon2 {
 public:
     struct Params {
+        using Object = Polygon2;
         std::vector<math::Point2> contour;
     };
 

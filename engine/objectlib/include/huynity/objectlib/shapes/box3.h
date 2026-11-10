@@ -9,6 +9,7 @@ namespace huynity::objectlib {
 class Box3 {
 public:
     struct Params {
+        using Object = Box3;
         math::Vector3 size;
     };
 

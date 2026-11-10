@@ -8,6 +8,7 @@ namespace huynity::objectlib {
 class Circle2 {
 public:
     struct Params {
+        using Object = Circle2;
         double radius;
     };
 

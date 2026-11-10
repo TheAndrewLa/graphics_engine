@@ -8,6 +8,7 @@ namespace huynity::objectlib {
 class Sphere3 {
 public:
     struct Params {
+        using Object = Sphere3;
         double radius;
     };
 

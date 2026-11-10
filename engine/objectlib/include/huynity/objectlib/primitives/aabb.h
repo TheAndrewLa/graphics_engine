@@ -10,6 +10,7 @@ template <std::size_t dimension>
 class Aabb {
 public:
     struct Params {
+        using Object = Aabb<dimension>;
         math::Point<dimension> max;
         math::Point<dimension> min;
     };

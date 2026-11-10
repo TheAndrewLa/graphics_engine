@@ -15,6 +15,7 @@ template <std::size_t dimension>
 class Polyline {
 public:
     struct Params {
+        using Object = Polyline;
         std::vector<math::Point<dimension>> vertices;
         bool closed;
     };

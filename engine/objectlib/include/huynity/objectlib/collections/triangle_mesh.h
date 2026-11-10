@@ -17,6 +17,7 @@ template <std::size_t dimension>
 class TriangleMesh {
 public:
     struct Params {
+        using Object = TriangleMesh;
         std::vector<math::Point<dimension>> positions;
         std::vector<math::VectorUnsigned3> triangles;
     };

@@ -11,6 +11,7 @@ template <std::size_t dimension>
 class Segment {
 public:
     struct Params {
+        using Object = Segment<dimension>;
         math::Point<dimension> a;
         math::Point<dimension> b;
     };

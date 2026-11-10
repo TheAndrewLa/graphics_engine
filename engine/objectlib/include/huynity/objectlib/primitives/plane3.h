@@ -9,6 +9,7 @@ namespace huynity::objectlib {
 class Plane3 {
 public:
     struct Params {
+        using Object = Plane3;
         math::Vector3 normal;
         double offset;
     };

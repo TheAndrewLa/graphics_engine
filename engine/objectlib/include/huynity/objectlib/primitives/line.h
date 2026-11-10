@@ -13,6 +13,7 @@ template <std::size_t dimension>
 class Line {
 public:
     struct Params {
+        using Object = Line<dimension>;
         math::Point<dimension> origin;
         math::Vector<dimension> direction;
     };

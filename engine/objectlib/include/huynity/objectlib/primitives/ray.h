@@ -13,6 +13,7 @@ template <std::size_t dimension>
 class Ray {
 public:
     struct Params {
+        using Object = Ray<dimension>;
         math::Point<dimension> origin;
         math::Vector<dimension> direction;
     };

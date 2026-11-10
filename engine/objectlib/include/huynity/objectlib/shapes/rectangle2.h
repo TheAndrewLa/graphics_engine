@@ -9,6 +9,7 @@ namespace huynity::objectlib {
 class Rectangle2 {
 public:
     struct Params {
+        using Object = Rectangle2;
         math::Vector2 size;
     };
 
