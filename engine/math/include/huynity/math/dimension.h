@@ -32,8 +32,11 @@ public:
     constexpr T* begin() { return m_components.begin(); }
     constexpr T* end() { return m_components.end(); }
 
-    constexpr const T* cbegin() const { return m_components.cbegin(); }
-    constexpr const T* cend() const { return m_components.cend(); }
+    constexpr const T* begin() const { return m_components.begin(); }
+    constexpr const T* end() const { return m_components.end(); }
+
+    constexpr const T* cbegin() const noexcept { return m_components.cbegin(); }
+    constexpr const T* cend() const noexcept { return m_components.cend(); }
 
     constexpr friend bool operator==(const DimContainer&, const DimContainer&) = default;
 
