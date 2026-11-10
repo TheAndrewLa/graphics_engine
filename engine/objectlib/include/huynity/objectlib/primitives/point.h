@@ -35,4 +35,6 @@ private:
     math::Point<dimension> m_coords;
 };
 
+using Point2 = Point<2>;
+using Point3 = Point<3>;
 } // namespace huynity::objectlib
