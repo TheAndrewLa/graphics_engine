@@ -8,7 +8,9 @@
 namespace huynity::math {
 
 template <std::size_t dimension>
-struct Point : detail::DimensionalContainer<double, dimension> {};
+struct Point : detail::DimContainer<double, dimension> {
+  using detail::DimContainer<double, dimension>::DimContainer;
+};
 
 using Point2 = Point<2>;
 using Point3 = Point<3>;
