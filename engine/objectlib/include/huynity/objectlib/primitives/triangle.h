@@ -2,7 +2,7 @@
 
 #include "huynity/math/validation.h"
 #include "huynity/objectlib/errors.h"
-#include "huynity/objectlib/object_type.h"
+#include "huynity/objectlib/objects.h"
 
 #include <cmath>
 

@@ -4,7 +4,7 @@
 #include "huynity/math/validation.h"
 #include "huynity/math/vector.h"
 #include "huynity/objectlib/errors.h"
-#include "huynity/objectlib/object_type.h"
+#include "huynity/objectlib/objects.h"
 
 namespace huynity::objectlib {
 

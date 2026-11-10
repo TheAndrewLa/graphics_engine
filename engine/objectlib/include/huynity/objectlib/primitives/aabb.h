@@ -2,7 +2,7 @@
 
 #include "huynity/math/point.h"
 #include "huynity/objectlib/errors.h"
-#include "huynity/objectlib/object_type.h"
+#include "huynity/objectlib/objects.h"
 
 namespace huynity::objectlib {
 template <std::size_t dimension>
