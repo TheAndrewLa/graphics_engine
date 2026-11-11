@@ -15,7 +15,7 @@ public:
 
     static constexpr auto Dimension = 2;
 
-    static constexpr auto Type = ObjectType::Rectange;
+    static constexpr auto Type = ObjectType::Rectangle;
 
     [[nodiscard]] static CreateResult<Rectangle2> create(Params params);
     [[nodiscard]] static CreateResult<Rectangle2> create(math::Vector2 size);

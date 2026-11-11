@@ -12,14 +12,14 @@ class Point {
 public:
     struct Params {
         using Object = Point<dimension>;
-        math::Point<dimension> coords;
+        math::Point<dimension> coordinates;
     };
 
     static constexpr auto Dimension = dimension;
 
     static constexpr auto Type = ObjectType::Point;
 
-    [[nodiscard]] static CreateResult<Point> create(Params params) { return create(params.coords); }
+    [[nodiscard]] static CreateResult<Point> create(Params params) { return create(params.coordinates); }
 
     [[nodiscard]] static CreateResult<Point> create(math::Point<dimension> coords) {
         if (!coords.finite()) {
