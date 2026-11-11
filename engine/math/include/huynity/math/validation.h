@@ -11,12 +11,12 @@ namespace huynity::math {
 
 template <std::size_t dimension>
 [[nodiscard]] bool finitePoints(std::span<const Point<dimension>> points) noexcept {
-    return std::ranges::all_of(points, Point<dimension>::finite);
+    return std::ranges::all_of(points, &Point<dimension>::finite);
 }
 
 template <std::size_t dimension>
 [[nodiscard]] bool nonzero(const math::Vector<dimension>& vector) noexcept {
-    return std::ranges::any_of(vector.components, [](double value) { return value != 0; });
+    return std::ranges::any_of(vector, [](double value) { return value != 0; });
 }
 
 [[nodiscard]] inline long double orientation(const math::Point2& a, const math::Point2& b,
@@ -29,7 +29,13 @@ template <std::size_t dimension>
 }
 
 [[nodiscard]] inline int sign(long double value) noexcept {
-    return int(std::signbit(value));
+    if (value < 0) {
+        return -1;
+    }
+    if (value > 0) {
+        return 1;
+    }
+    return 0;
 }
 
 [[nodiscard]] inline bool onSegment(const math::Point2& p, const math::Point2& a, const math::Point2& b) noexcept {
