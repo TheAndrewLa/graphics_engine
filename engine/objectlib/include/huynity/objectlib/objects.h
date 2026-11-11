@@ -1,5 +1,10 @@
 #pragma once
 
+#include "huynity/objectlib/errors.h"
+
+#include <concepts>
+#include <utility>
+
 namespace huynity::objectlib {
 
 enum class ObjectType {
@@ -13,7 +18,7 @@ enum class ObjectType {
     Polygon,
     Polyline,
     Ray,
-    Rectange,
+    Rectangle,
     Segment,
     Sphere,
     Triangle,
@@ -21,9 +26,21 @@ enum class ObjectType {
 };
 
 template <typename Object>
-concept SupportedObject = requires {
-    typename Object::Params;
-    Object::Dimension -> std::size_t;
-    Object::Type -> ObjectType;
+concept SupportedObject = requires(typename Object::Params params) {
+    { Object::create(std::move(params)) } -> std::same_as<CreateResult<Object>>;
+    { Object::Type } -> std::convertible_to<ObjectType>;
 };
+
+template <typename Params>
+concept SupportedParams = requires {
+    typename Params::Object;
+} && std::same_as<Params, typename Params::Object::Params> && SupportedObject<typename Params::Object>;
+
+template <typename Params>
+    requires SupportedParams<Params>
+[[nodiscard]] CreateResult<typename Params::Object> createObject(Params params) {
+    using Object = typename Params::Object;
+    return Object::create(std::move(params));
+}
+
 } // namespace huynity::objectlib
