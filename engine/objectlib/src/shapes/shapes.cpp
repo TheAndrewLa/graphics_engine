@@ -1,14 +1,19 @@
 #include "huynity/math/validation.h"
 #include "huynity/math/vector.h"
+#include "huynity/objectlib/errors.h"
 #include "huynity/objectlib/primitives/plane3.h"
 #include "huynity/objectlib/shapes/box3.h"
 #include "huynity/objectlib/shapes/circle2.h"
+#include "huynity/objectlib/shapes/cone3.h"
+#include "huynity/objectlib/shapes/cylinder3.h"
 #include "huynity/objectlib/shapes/disk2.h"
 #include "huynity/objectlib/shapes/rectangle2.h"
 #include "huynity/objectlib/shapes/sphere3.h"
+#include "huynity/objectlib/shapes/torus3.h"
 
 #include <algorithm>
 #include <cmath>
+#include <expected>
 
 namespace huynity::objectlib {
 
@@ -105,6 +110,39 @@ CreateResult<Plane3> Plane3::create(math::Vector3 normal, double offset) {
         return std::unexpected(CreateError{CreateErrorCode::InvalidDirection});
     }
     return Plane3(normal, offset);
+}
+
+CreateResult<Cone3> Cone3::create(Cone3::Params params) {
+    return create(params.radius, params.height);
+}
+
+CreateResult<Cone3> Cone3::create(double radius, double height) {
+    if (!std::isfinite(radius) || !std::isfinite(height)) {
+        return std::unexpected(CreateError{CreateErrorCode::NonFiniteParameter});
+    }
+    return Cone3(radius, height);
+}
+
+CreateResult<Cylinder3> Cylinder3::create(Cylinder3::Params params) {
+    return create(params.radius, params.height);
+}
+
+CreateResult<Cylinder3> Cylinder3::create(double radius, double height) {
+    if (!std::isfinite(radius) || !std::isfinite(height)) {
+        return std::unexpected(CreateError{CreateErrorCode::NonFiniteParameter});
+    }
+    return Cylinder3(radius, height);
+}
+
+CreateResult<Torus3> Torus3::create(Torus3::Params params) {
+    return create(params.majorRadius, params.minorRadius);
+}
+
+CreateResult<Torus3> Torus3::create(double majorRadius, double minorRadius) {
+    if (!std::isfinite(majorRadius) || !std::isfinite(minorRadius)) {
+        return std::unexpected(CreateError{CreateErrorCode::NonFiniteParameter});
+    }
+    return Torus3(majorRadius, minorRadius);
 }
 
 } // namespace huynity::objectlib

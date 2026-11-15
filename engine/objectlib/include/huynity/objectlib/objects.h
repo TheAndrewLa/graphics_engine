@@ -11,6 +11,8 @@ enum class ObjectType {
   Aabb,
   Box,
   Circle,
+  Cone,
+  Cylinder,
   Disk,
   Point,
   Line,
@@ -21,6 +23,7 @@ enum class ObjectType {
   Rectangle,
   Segment,
   Sphere,
+  Torus,
   Triangle,
   TriangleMesh,
 };
