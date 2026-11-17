@@ -137,11 +137,11 @@ int main(int argc, char* argv[]) {
     addBox(engine, {18.4, 0.4, 14.4}, {0.0, -0.65, 0.0}, {0.28, 0.19, 0.11, 1.0});
     addBox(engine, {18.0, 0.5, 14.0}, {0.0, -0.25, 0.0}, {0.38, 0.55, 0.25, 1.0});
 
-    const auto shoreTransform = math::compose(math::translation(math::Vector3{4.1, 0.0, 1.8}),
-                                              math::scaling(math::Vector3{1.4, 0.025, 1.0}));
+    const auto shoreTransform =
+        math::compose(math::translation(math::Vector3{4.1, 0.0, 1.8}), math::scaling(math::Vector3{1.4, 0.025, 1.0}));
     addSphere(engine, 2.25, shoreTransform, {0.68, 0.59, 0.36, 1.0});
-    const auto waterTransform = math::compose(math::translation(math::Vector3{4.1, 0.045, 1.8}),
-                                              math::scaling(math::Vector3{1.4, 0.02, 1.0}));
+    const auto waterTransform =
+        math::compose(math::translation(math::Vector3{4.1, 0.045, 1.8}), math::scaling(math::Vector3{1.4, 0.02, 1.0}));
     addSphere(engine, 2.0, waterTransform, {0.16, 0.48, 0.65, 1.0});
 
     addBox(engine, {3.4, 2.4, 2.8}, {-1.8, 1.2, 0.2}, {0.88, 0.76, 0.55, 1.0});
@@ -194,8 +194,8 @@ int main(int argc, char* argv[]) {
     addBox(engine, {8.2, 0.14, 0.14}, {3.0, 0.38, 5.9}, {0.55, 0.37, 0.20, 1.0});
     addBox(engine, {8.2, 0.14, 0.14}, {3.0, 0.78, 5.9}, {0.55, 0.37, 0.20, 1.0});
 
-    for (const auto& rock : std::array{math::Vector3{1.8, 0.18, 0.2}, math::Vector3{2.1, 0.14, 3.4},
-                                       math::Vector3{6.2, 0.16, 3.6}}) {
+    for (const auto& rock :
+         std::array{math::Vector3{1.8, 0.18, 0.2}, math::Vector3{2.1, 0.14, 3.4}, math::Vector3{6.2, 0.16, 3.6}}) {
         const auto transform = math::compose(math::translation(rock), math::scaling(math::Vector3{1.3, 0.65, 0.9}));
         addSphere(engine, 0.32, transform, {0.43, 0.45, 0.40, 1.0});
     }
